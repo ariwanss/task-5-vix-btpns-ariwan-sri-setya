@@ -17,6 +17,22 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt" gorm:"autoUpdateTime"`
 }
 
+func (u *User) setUsername(username string) {
+	u.Username = username
+}
+
+func (u *User) setEmail(email string) {
+	u.Email = email
+}
+
+func (u *User) setPassword(password string) {
+	u.Password = password
+}
+
+func (u *User) setPhoto(photo Photo) {
+	u.Photo = photo
+}
+
 func CreateUser(user *User) (*User, error) {
 	hashedPassword, err := helpers.HashPassword(user.Password)
 
@@ -24,7 +40,7 @@ func CreateUser(user *User) (*User, error) {
 		return nil, err
 	}
 
-	user.Password = hashedPassword
+	user.setPassword(hashedPassword)
 
 	res := database.Database.Create(user)
 
@@ -62,10 +78,10 @@ func UpdateUser(id uint, update *User) (*User, error) {
 		return nil, err
 	}
 
-	user.Username = update.Username
-	user.Email = update.Email
-	user.Password = hashedPassword
-	user.Photo = update.Photo
+	user.setUsername(update.Username)
+	user.setEmail(update.Email)
+	user.setPassword(hashedPassword)
+	user.setPhoto(update.Photo)
 
 	res := database.Database.Save(user)
 	return user, res.Error

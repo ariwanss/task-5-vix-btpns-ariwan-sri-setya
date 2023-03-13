@@ -10,6 +10,22 @@ type Photo struct {
 	UserId   uint   `json:"userId"`
 }
 
+func (p *Photo) SetTitle(title string) {
+	p.Title = title
+}
+
+func (p *Photo) SetCaption(caption string) {
+	p.Caption = caption
+}
+
+func (p *Photo) SetPhotoUrl(photoUrl string) {
+	p.PhotoUrl = photoUrl
+}
+
+func (p *Photo) SetUserId(userId uint) {
+	p.UserId = userId
+}
+
 func CreatePhoto(photo *Photo) (*Photo, error) {
 	res := database.Database.Create(photo)
 	if res.Error != nil {
@@ -43,9 +59,9 @@ func UpdatePhoto(id uint, update *Photo) (*Photo, error) {
 		return nil, err
 	}
 
-	photo.Caption = update.Caption
-	photo.Title = update.Title
-	photo.PhotoUrl = update.PhotoUrl
+	photo.SetCaption(update.Caption) 
+	photo.SetTitle(update.Title) 
+	photo.SetPhotoUrl(update.PhotoUrl) 
 	
 	res := database.Database.Save(photo)
 
@@ -53,7 +69,13 @@ func UpdatePhoto(id uint, update *Photo) (*Photo, error) {
 }
 
 func DeletePhoto(id uint) error {
-	res := database.Database.Delete(&User{}, id)
+	_, err := FindPhotoById(id)
+
+	if err != nil {
+		return err
+	}
+
+	res := database.Database.Delete(&Photo{}, id)
 
 	return res.Error
 }

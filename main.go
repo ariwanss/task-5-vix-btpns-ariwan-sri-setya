@@ -35,6 +35,11 @@ func main() {
 	router.PUT("/users/:id", middlewares.Protect, controllers.UpdateUser)
 	router.DELETE("/users/:id", middlewares.Protect, controllers.DeleteUser)
 
+	router.POST("/photos", middlewares.Protect, controllers.CreatePhoto)
+	router.GET("/photos", middlewares.Protect, controllers.GetPhoto)
+	router.PUT("/photos/:id", middlewares.Protect, controllers.UpdatePhoto)
+	router.DELETE("/photos/:id", middlewares.Protect, controllers.DeletePhoto)
+
 	router.DELETE("/users/deleteAll", func(c *gin.Context) {
 		res := database.Database.Where("1 = 1").Delete(&models.User{})
 		c.JSON(http.StatusOK, gin.H{"rows affected": res.RowsAffected})
